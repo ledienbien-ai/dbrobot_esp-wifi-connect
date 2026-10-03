@@ -7,35 +7,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
     <style>
+        /* ══════════════════════════════════════════════════════════════
+           BẢNG MÀU DB-ROBOT — chép nguyên văn từ :root của dbrobot.vn
+           --------------------------------------------------------------
+           ⚠ ĐỪNG ĐỔI MẤY MÃ MÀU NÀY MỘT CÁCH LẺ TẺ. Chúng là CÙNG MỘT bộ
+            token với website; lệch một cái là trang cấu hình nhìn "gần
+            giống" trang chủ, mà gần giống thì trông như hàng nhái.
+            Đổi thì đổi cả cụm, và đổi theo website trước.
+
+           Nguồn: getComputedStyle(:root) của https://dbrobot.vn
+             --blue #1462E8 · --blue-deep #0B3FA8 · --blue-light #E8F0FE
+             --ink #06214A · --ink-soft #46596F · --line #DCE6F5
+             --signal #00A6A6 · --sky #F4F8FF · --radius 16px
+           ══════════════════════════════════════════════════════════════ */
         :root {
-            --bg-main: #200444;
-            --bg-card: #3f1575;
-            --bg-card-soft: #0f0325;
-            --accent: #9900ff;
-            --accent-soft: rgba(132, 0, 255, 0.14);
-            --accent-2: #5f89ff;
-            --text-main: #f8f9ff;
-            --text-sub: #a8b0c8;
-            --border-soft: rgba(255, 255, 255, 0.12);
-            --danger: #ff4d4f;
+            --blue: #1462E8;
+            --blue-deep: #0B3FA8;
+            --blue-light: #E8F0FE;
+            --blue-bright: #2C7BF2;
+            --ink: #06214A;
+            --ink-soft: #46596F;
+            --line: #DCE6F5;
+            --signal: #00A6A6;
+            --sky: #F4F8FF;
+            --white: #FFFFFF;
+            --danger: #E11D2E;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px rgba(6, 33, 74, .06), 0 4px 14px rgba(6, 33, 74, .05);
+            --shadow-md: 0 4px 10px rgba(6, 33, 74, .07), 0 18px 40px rgba(6, 33, 74, .09);
+
+            /* Tên cũ giữ lại để mọi quy tắc bên dưới khỏi phải viết lại.
+               Bản trước dùng bộ tên này; đổi tên hàng loạt chỉ tổ sinh lỗi
+               sót mà không được gì. */
+            --bg-main: var(--sky);
+            --bg-card: var(--white);
+            --bg-card-soft: var(--blue-light);
+            --accent: var(--blue);
+            --accent-soft: rgba(20, 98, 232, 0.10);
+            --accent-2: var(--blue-deep);
+            --text-main: var(--ink);
+            --text-sub: var(--ink-soft);
+            --border-soft: var(--line);
         }
 
         * {
             box-sizing: border-box;
         }
 
+        /* ⚠ KHÔNG nạp phông từ Google Fonts ở đây.
+           Lúc dùng trang này, điện thoại đang nối vào điểm phát của ROBOT
+           chứ không ra được Internet — mọi <link> phông đều treo rồi mới
+           chịu thua, làm trang trắng mất mấy giây. "Be Vietnam Pro" để
+           đầu danh sách là để máy nào CÓ SẴN phông đó thì dùng (đúng như
+           dbrobot.vn), còn lại rơi về phông hệ thống, vẫn đẹp. */
         body {
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+            font-family: "Be Vietnam Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
             background:
-                radial-gradient(circle at top, #29153c 0, #260b47 55%, #000000 100%),
-                #000000;
+                radial-gradient(1200px 520px at 50% -10%, #E8F0FE 0%, rgba(232, 240, 254, 0) 70%),
+                var(--sky);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-text-size-adjust: 100%;
         }
 
         .page {
@@ -50,30 +87,25 @@
 
         .card {
             position: relative;
-            background:
-                radial-gradient(circle at 0 0, rgba(111, 0, 255, 0.22), transparent 60%),
-                radial-gradient(circle at 100% 0, rgba(178, 95, 255, 0.22), transparent 55%),
-                var(--bg-card);
-            border-radius: 22px;
+            background: var(--white);
+            border-radius: var(--radius);
             padding: 20px 20px 18px;
-            box-shadow:
-                0 24px 60px rgba(0, 0, 0, 0.9),
-                0 0 0 1px rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(132, 0, 255, 0.22);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--line);
             overflow: hidden;
         }
 
+        /* Vệt xanh mảnh trên đỉnh thẻ — lấy đúng dải chuyển màu của thanh
+           tiêu đề dbrobot.vn: linear-gradient(100deg,#0B3FA8,#1462E8 68%,#2C7BF2) */
         .card::before {
             content: "";
             position: absolute;
-            inset: -40%;
-            background:
-                conic-gradient(from 160deg, rgba(132, 0, 255, 0.28), transparent, rgba(178, 95, 255, 0.28), transparent),
-                radial-gradient(circle at 50% 130%, rgba(174, 0, 255, 0.28), transparent 60%);
-            opacity: 0.6;
-            mix-blend-mode: screen;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(100deg, var(--blue-deep) 0%, var(--blue) 68%, var(--blue-bright) 100%);
             pointer-events: none;
-            z-index: -1;
         }
 
         .card-header {
@@ -90,106 +122,109 @@
             align-items: center;
         }
 
+        /* Logo thật của DB-Robot, nhúng thẳng bằng data: URI.
+           ⚠ PHẢI nhúng, không được <img src="logo.png">: component này chỉ
+            đăng ký đúng hai đường dẫn trả HTML ("/" và "/done.html") trong
+            wifi_configuration_ap.cc, không có chỗ nào phục vụ file ảnh.
+            Trỏ ra file ngoài là ảnh vỡ trên máy khách. */
         .brand-logo {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background:
-                radial-gradient(circle at 30% 20%, #ffffff, #00ffc3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
-            color: #020308;
-            box-shadow: 0 0 18px rgba(0, 255, 208, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
             flex-shrink: 0;
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(6, 33, 74, .18);
+            display: block;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         .brand-text-main {
             font-size: 18px;
             font-weight: 800;
-            letter-spacing: 0.08em;
-            /* text-transform: uppercase; */
-            background: linear-gradient(120deg, var(--accent), #ffffff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            letter-spacing: 0.02em;
+            color: var(--ink);
         }
 
+        /* Dòng phụ dưới tên thương hiệu. Để 10px + giãn chữ nhỏ và CẤM
+           xuống dòng: ở bề ngang 360–390px (đa số điện thoại) bản 11px
+           bị gãy làm hai dòng, đẩy cả phần đầu thẻ cao thêm 22px. */
         .brand-text-sub {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
+            font-size: 10px;
             color: var(--text-sub);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        /* Khối thương hiệu được phép co lại để ô chọn ngôn ngữ luôn đủ chỗ */
+        .brand > div:last-child {
+            min-width: 0;
         }
 
         .language-switch {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(5, 8, 28, 0.95);
-            border-radius: 999px;
-            padding: 4px 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 0 14px rgba(0, 0, 0, 0.7);
+            flex-shrink: 0;
         }
 
         .language-switch span {
-            font-size: 11px;
+            font-size: 10px;
+            letter-spacing: 0.14em;
             color: var(--text-sub);
             text-transform: uppercase;
-            letter-spacing: 0.16em;
         }
 
         .language-switch select {
-            padding: 4px 6px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            background: rgba(1, 4, 18, 0.96);
-            color: var(--text-main);
-            font-size: 11px;
-            outline: none;
+            width: auto;
+            min-width: 108px;
+            padding: 6px 8px;
+            font-size: 13px;
+            margin: 0;
         }
 
         .tabs {
-            display: inline-flex;
+            display: flex;
+            gap: 6px;
             padding: 4px;
+            background: var(--blue-light);
             border-radius: 999px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .tab {
-            padding: 8px 18px;
+            flex: 1;
+            text-align: center;
+            padding: 9px 12px;
             border-radius: 999px;
-            cursor: pointer;
-            font-size: 13px;
-            border: none;
-            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
             color: var(--text-sub);
-            transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+        }
+
+        .tab:hover {
+            color: var(--blue-deep);
         }
 
         .tab.active {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #08020d;
-            font-weight: 600;
-            box-shadow: 0 0 18px rgba(119, 0, 255, 0.55);
-            transform: translateY(-0.5px);
+            background: var(--white);
+            color: var(--blue-deep);
+            box-shadow: var(--shadow-sm);
         }
 
         .tab-content {
             display: none;
-            background: radial-gradient(circle at top left, rgba(132, 0, 255, 0.07), transparent 65%),
-                        radial-gradient(circle at bottom right, rgba(170, 95, 255, 0.12), transparent 55%),
-                        var(--bg-card-soft);
-            border-radius: 18px;
-            padding: 18px 18px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 8px;
         }
 
         .tab-content.active {
@@ -197,186 +232,228 @@
         }
 
         h3 {
-            margin: 0 0 10px;
+            margin: 16px 0 8px;
             font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
         }
 
         p {
-            margin: 8px 0;
-            font-size: 13px;
+            margin: 10px 0;
         }
 
         label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-size: 13px;
             font-weight: 600;
+            color: var(--text-sub);
         }
 
-        input[type="text"],
-        input[type="password"],
-        select {
+        input[type="text"], input[type="password"], select {
             width: 100%;
-            padding: 8px 10px;
-            font-size: 13px;
+            padding: 11px 12px;
+            font-size: 15px;
             border-radius: 10px;
-            border: 1px solid var(--border-soft);
-            background: rgba(1, 4, 16, 0.96);
-            color: var(--text-main);
+            border: 1px solid var(--line);
+            background: var(--white);
+            color: var(--ink);
             outline: none;
-            transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, transform 0.06s ease;
+            transition: border-color .15s ease, box-shadow .15s ease;
+            /* iOS phóng to trang khi ô nhập có cỡ chữ < 16px lúc bấm vào.
+               15px + chốt này là vừa đủ để không bị giật. */
+            -webkit-appearance: none;
+            appearance: none;
         }
 
-        input[type="text"]::placeholder,
-        input[type="password"]::placeholder {
-            color: #657091;
+        select {
+            /* mũi tên tự vẽ, vì appearance:none đã gỡ mũi tên mặc định */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%2346596F' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 11px;
+            padding-right: 32px;
         }
 
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        select:focus {
-            border-color: var(--accent);
-            box-shadow:
-                0 0 0 1px rgba(183, 0, 255, 0.55),
-                0 0 18px rgba(68, 0, 255, 0.35);
-            background: rgba(4, 9, 28, 0.98);
-            transform: translateY(-0.3px);
+        input[type="text"]::placeholder, input[type="password"]::placeholder {
+            color: #9AA9BF;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(20, 98, 232, .16);
         }
 
         input[type="submit"] {
-            width: auto;
-            min-width: 120px;
-            padding: 9px 20px;
-            border-radius: 999px;
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 15px;
+            font-weight: 700;
             border: none;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #02040d;
-            font-size: 13px;
-            font-weight: 600;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+            color: var(--white);
             cursor: pointer;
-            box-shadow: 0 12px 28px rgba(0, 255, 200, 0.4);
-            transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.06s ease, opacity 0.1s ease;
+            box-shadow: 0 6px 16px rgba(20, 98, 232, .28);
+            transition: box-shadow .15s ease, transform .06s ease, filter .15s ease;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         input[type="submit"]:hover {
-            box-shadow: 0 16px 34px rgba(0, 255, 200, 0.6);
-            transform: translateY(-0.5px);
+            box-shadow: 0 10px 22px rgba(20, 98, 232, .36);
+            filter: brightness(1.05);
         }
 
         input[type="submit"]:active {
-            box-shadow: 0 8px 20px rgba(0, 255, 200, 0.5);
-            transform: translateY(0.2px) scale(0.99);
+            transform: translateY(1px);
+            box-shadow: 0 4px 12px rgba(20, 98, 232, .26);
         }
 
         input[type="submit"]:disabled {
-            background: linear-gradient(135deg, #555d78, #30374d);
-            cursor: not-allowed;
+            background: #B9C7DC;
+            color: var(--white);
             box-shadow: none;
-            opacity: 0.7;
+            cursor: not-allowed;
+            filter: none;
         }
 
-        #remember_bssid,
-        #sleep_mode {
-            width: auto;
+        #remember_bssid, #sleep_mode {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            accent-color: var(--blue);
+            cursor: pointer;
         }
 
         #saved_list_container {
-            margin-bottom: 12px;
-            padding: 10px 12px;
+            padding: 14px;
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--blue-light);
+            border: 1px solid var(--line);
+            margin-bottom: 4px;
+        }
+
+        #saved_list_container h3 {
+            margin-top: 0;
         }
 
         #saved_list {
-            padding-left: 16px;
-            margin: 0;
             list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
         #saved_list li {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            margin: 4px 0;
-            gap: 6px;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: 10px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            font-size: 14px;
+            color: var(--ink);
+            word-break: break-all;
+        }
+
+        #saved_list li + li {
+            margin-top: 6px;
         }
 
         #saved_list button {
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            background: rgba(5, 8, 30, 0.9);
-            color: var(--text-main);
-            font-size: 11px;
-            padding: 3px 6px;
+            border: 1px solid var(--line);
+            background: var(--white);
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 13px;
+            line-height: 1.2;
             cursor: pointer;
+            transition: background .12s ease, border-color .12s ease;
         }
 
         #saved_list button:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: var(--blue-light);
+            border-color: var(--blue);
         }
 
         #ap_list {
-            margin-top: 12px;
-            font-size: 13px;
+            margin-top: 14px;
+            font-size: 14px;
         }
 
         #ap_list p {
-            margin-top: 0;
+            margin: 0 0 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
         }
 
         #ap_list .scanning {
-            font-style: italic;
-            color: var(--text-sub);
+            color: var(--blue);
         }
 
         #ap_list a {
             display: block;
-            margin-top: 5px;
-            color: var(--accent);
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: var(--white);
+            color: var(--blue-deep);
             text-decoration: none;
-            font-size: 13px;
+            font-weight: 600;
+            transition: background .12s ease, border-color .12s ease, transform .06s ease;
         }
 
         #ap_list a:hover {
-            text-decoration: underline;
+            background: var(--blue-light);
+            border-color: var(--blue);
+            transform: translateX(2px);
         }
 
         .error {
             color: var(--danger);
             font-size: 13px;
+            font-weight: 600;
+            min-height: 0;
+            margin: 6px 0;
         }
 
         .toast {
             position: fixed;
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.86);
-            color: white;
-            padding: 14px 26px;
-            border-radius: 10px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
-            min-width: 200px;
-            text-align: center;
+            bottom: 28px;
+            transform: translate(-50%, 16px);
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: var(--white);
             font-size: 14px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+            z-index: 60;
+            max-width: 90vw;
+            text-align: center;
         }
 
         .toast.show {
             opacity: 1;
+            transform: translate(-50%, 0);
         }
 
         .loading-overlay {
-            display: none;
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.58);
-            z-index: 2000;
-            justify-content: center;
+            background: rgba(244, 248, 255, .92);
+            backdrop-filter: blur(3px);
+            display: none;
             align-items: center;
+            justify-content: center;
+            z-index: 70;
         }
 
         .loading-overlay.show {
@@ -384,25 +461,22 @@
         }
 
         .loading-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
+            text-align: center;
+            padding: 26px 32px;
+            border-radius: var(--radius);
+            background: var(--white);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-md);
         }
 
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid rgba(255, 255, 255, 0.28);
-            border-top-color: #ffffff;
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 12px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .loading-text {
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
+            border: 3px solid var(--blue-light);
+            border-top-color: var(--blue);
+            animation: spin .8s linear infinite;
         }
 
         @keyframes spin {
@@ -411,27 +485,56 @@
             }
         }
 
+        .loading-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* ───────── Khung hướng dẫn bên phải ───────── */
         .guide-card {
             position: relative;
-            background:
-                radial-gradient(circle at top right, rgba(151, 95, 255, 0.3), transparent 65%),
-                radial-gradient(circle at bottom left, rgba(76, 0, 255, 0.24), transparent 55%),
-                rgba(3, 6, 22, 0.98);
-            border-radius: 22px;
+            border-radius: var(--radius);
             padding: 20px 20px 18px;
-            box-shadow:
-                0 20px 52px rgba(0, 0, 0, 0.88),
-                0 0 0 1px rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(95, 137, 255, 0.35);
+            background: var(--white);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-md);
             color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .guide-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--blue-deep);
+            background: var(--blue-light);
+            border: 1px solid #C9DBF8;
+            margin-bottom: 12px;
+        }
+
+        .guide-badge span.dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--signal);
+            flex-shrink: 0;
         }
 
         .guide-title {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 0 0 10px;
-            font-size: 15px;
+            margin: 0 0 8px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
         }
 
         .guide-title span {
@@ -439,23 +542,25 @@
         }
 
         .guide-intro {
-            font-size: 13px;
+            margin: 0 0 14px;
+            font-size: 13.5px;
+            line-height: 1.6;
             color: var(--text-sub);
-            margin: 0 0 10px;
         }
 
         .steps {
             list-style: none;
-            padding: 0;
-            margin: 0 0 10px;
             counter-reset: step;
+            margin: 0 0 14px;
+            padding: 0;
         }
 
         .steps li {
             position: relative;
-            padding-left: 24px;
-            margin-bottom: 8px;
-            font-size: 13px;
+            padding-left: 32px;
+            margin-bottom: 11px;
+            font-size: 13.5px;
+            line-height: 1.6;
             color: var(--text-main);
         }
 
@@ -465,69 +570,77 @@
             position: absolute;
             left: 0;
             top: 1px;
-            width: 17px;
-            height: 17px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ffffff, var(--accent-2));
+            background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-            color: #020308;
-            box-shadow: 0 0 14px rgba(95, 137, 255, 0.9);
         }
 
         .steps li span.tag {
-            margin-left: 4px;
-            font-size: 11px;
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 9px;
             border-radius: 999px;
-            padding: 1px 7px;
-            border: 1px solid rgba(0, 255, 200, 0.7);
-            color: var(--accent);
-            background: rgba(0, 255, 200, 0.1);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--signal);
+            background: rgba(0, 166, 166, .10);
+            border: 1px solid rgba(0, 166, 166, .35);
+            white-space: nowrap;
         }
 
         .guide-highlight {
-            margin-top: 6px;
-            padding: 8px 9px;
-            border-radius: 14px;
-            font-size: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px dashed rgba(0, 255, 200, 0.55);
+            padding: 11px 13px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.6;
             color: var(--text-sub);
+            background: var(--blue-light);
+            border-left: 3px solid var(--blue);
         }
 
         .guide-highlight strong {
-            color: var(--accent);
+            color: var(--blue-deep);
         }
 
         .guide-section-title {
-            margin: 12px 0 4px;
+            margin: 16px 0 7px;
             font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--accent-soft);
+            color: var(--blue-deep);
         }
 
         .error-list {
             margin: 0;
-            padding-left: 16px;
-            font-size: 12px;
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.6;
             color: var(--text-sub);
         }
 
         .error-list li + li {
-            margin-top: 4px;
+            margin-top: 5px;
         }
 
         .help-links {
-            margin-top: 10px;
-            font-size: 12px;
+            margin-top: 16px;
+            padding-top: 13px;
+            border-top: 1px solid var(--line);
+            font-size: 13px;
+            color: var(--text-sub);
         }
 
         .help-links a {
-            color: var(--accent);
+            color: var(--blue);
+            font-weight: 600;
             text-decoration: none;
         }
 
@@ -535,68 +648,67 @@
             text-decoration: underline;
         }
 
-        .guide-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            margin-bottom: 6px;
-        }
-
-        .guide-badge span.dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #20ffab;
-            box-shadow: 0 0 12px rgba(0, 255, 171, 0.9);
-        }
-
         .guide-footer {
             margin-top: 10px;
-            font-size: 11px;
-            text-align: right;
-            color: var(--text-sub);
+            font-size: 11.5px;
+            color: #7D8CA3;
         }
 
         .guide-footer span {
-            color: var(--accent);
+            color: var(--blue-deep);
             font-weight: 600;
         }
 
-        @media (max-width: 900px) {
-            .page {
-                grid-template-columns: minmax(0, 1fr);
-                max-width: 680px;
-            }
+        /* Nút ❌ xoá nhanh trong tab Advanced.
+           Trước đây bốn nút này mang màu tối ghi thẳng vào thuộc tính
+           style= của thẻ, nên đổi bảng màu ở :root không với tới được —
+           chúng vẫn đen sì trên nền trắng. Nay là một lớp bình thường. */
+        .btn-clear {
+            flex-shrink: 0;
+            padding: 9px 11px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--white);
+            color: var(--text-sub);
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background .12s ease, border-color .12s ease;
         }
 
-        @media (max-width: 520px) {
-            .page {
-                padding: 16px 12px;
-            }
+        .btn-clear:hover {
+            background: #FDECEE;
+            border-color: var(--danger);
+        }
 
-            .card,
-            .guide-card {
-                border-radius: 20px;
-                padding: 16px 14px 14px;
-            }
-
-            .card-header {
-                flex-direction: column;
+        /* ───────── Màn hình hẹp ─────────
+           Trang này gần như luôn được mở trên ĐIỆN THOẠI, ngay sau khi nối
+           vào điểm phát của robot — nên nhánh một cột mới là nhánh chính,
+           hai cột chỉ là phần thưởng cho ai mở bằng máy tính. */
+        @media (max-width: 900px) {
+            body {
                 align-items: flex-start;
             }
 
-            .language-switch {
-                margin-left: -2px;
-                margin-top: 6px;
+            .page {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+                padding: 14px 12px 24px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .card,
+            .guide-card {
+                padding: 16px 14px 14px;
             }
 
-            .tab-content {
-                padding: 14px 14px 12px;
+            .brand-text-main {
+                font-size: 16px;
+            }
+
+            .language-switch select {
+                min-width: 92px;
             }
         }
     </style>
@@ -615,7 +727,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="brand">
-                    <div class="brand-logo">DB</div>
+                    <div class="brand-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAMAAADVRocKAAABgFBMVEWhJCVaISklXJ3eX2Hgm59f1/qg1vNfVmAonepdpuMiK0yZXGLxYGAdFiYXa9xvh6HXIR2okZviJSu0JirSJihbNEbbKy3h4ePcV1iUtNjeogTYVFRPZIn9/f3iWBeZdYkAOsrynqAEOKh6AACQOkSrWFgw2PyyUQPwygU1ibe7HB/Vu8UsRlO5Gh7HeYPoPUP8gX47AABDeM7NPkEA//9eQD5/v/9///+/fz+qcY23gHyqqqqq//8AAAD2+fsDJ1fn6e4GBQiwBwnRFRaPBQcBLWFneZOwucbS2uUNNmcsJyynqbLHydFOaYtyAgTLCQsBGU3X5fCZpLP/AAC4xNJJR0mRmajR1NpYc5OztLntFhY3NzgHeOwWFReKiJDtJiUpSXIMhu9raGs1VHoRl/WzFRcCZ+nSJie0AACUlZrsCQlRBAgOZ9TxNzUXRHIJV84vGC72SUjSNTVWVVb3d3YuuPmS+/72aWl2dXmt+v0vxvsCCC4BSdATp/kmFxhs2fgEiIs3AAAAgHRSTlP6/f/0/v///////v4P/v//6/4cDZ3+Xv+g//9Y/wL///8K/wP9A/////+Y//9l////Bv9YAf8EAgQJ/wYDAP/+///+/f7///////7////+/v7//wH////////+//////7///////z//QX//v7//P///f77//n///r////+/////9bgYe0AABRwSURBVHjapVqJX9ro1s4GASKbitTWareZztyZb+727d9nEggkIQQJMSRsAkYRQVEUFxy3f/2ek0Brlzude+9pf4XS+jzvec7yvicvxOY3bftw8aX/7u3h0iLa4ewftg+3v/nTxDfh/xv/XFpcWX5Gg52BjUaJ5eWVxUX8h29S/DbB9hL+ubjy7Pr64po+G533PeuM0DpA8hL9+KcJPPjFZ/TFxfVZn9giybGmadFodDweH20RUqPTSSSW0Y/tf4pgewFEX6EZhj4njsaR7h5VQqMoaq97clKICOOtnNRoNJZXMEz/OAHAL724YC7Oc0dat1QD8/BLa9QeWrcLLML4KDtsNBIrvyHU3yHYfr35Z4C/7m356KWP5hMgA3AUhHGuPPQp/hECWD6Ic907inyG/sGDGcEHCojF1534KsF3m0vPmAsC4GUZ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" alt="DB-Robot" width="42" height="42"></div>
                     <div>
                         <div class="brand-text-main">DB-Robot</div>
                         <div class="brand-text-sub">Wi-Fi device setup</div>
@@ -710,7 +822,7 @@
                             <label for="weather_api_key" data-lang="weather_api_key">Custom WEATHER API Key:</label>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <input type="text" id="weather_api_key" name="weather_api_key" placeholder="Nhập API KEY từ https://openweathermap.org/api" style="flex:1;">
-                                <button type="button" onclick="clearWeatherApiKey()" style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                                <button type="button" onclick="clearWeatherApiKey()" class="btn-clear">❌</button>
                             </div>
                         </p>
 
@@ -718,7 +830,7 @@
                             <label for="weather_city" data-lang="weather_city">Custom WEATHER City:</label>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <input type="text" id="weather_city" name="weather_city" placeholder="Để trống hoặc nhập tên thành phố" style="flex:1;">
-                                <button type="button" onclick="clearWeatherCity()" style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                                <button type="button" onclick="clearWeatherCity()" class="btn-clear">❌</button>
                             </div>
                         </p>
 
@@ -726,7 +838,7 @@
                             <label for="music_url" data-lang="music_url">Custom MUSIC URL:</label>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <input type="text" id="music_url" name="music_url" style="flex:1;">
-                                <button type="button" onclick="clearMusicUrl()" style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                                <button type="button" onclick="clearMusicUrl()" class="btn-clear">❌</button>
                             </div>
                         </p>
 
@@ -734,7 +846,7 @@
                             <label for="ota_url" data-lang="ota_url">Custom OTA URL:</label>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <input type="text" id="ota_url" name="ota_url" style="flex:1;">
-                                <button type="button" onclick="clearOtaUrl()" style="padding:5px 10px;border:1px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(0,0,0,0.4);color:#fff;cursor:pointer;">❌</button>
+                                <button type="button" onclick="clearOtaUrl()" class="btn-clear">❌</button>
                             </div>
                         </p>
 
