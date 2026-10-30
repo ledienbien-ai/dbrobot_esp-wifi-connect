@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <memory>
+#include <functional>
 
 #include <esp_http_server.h>
 #include <esp_event.h>
@@ -12,32 +14,49 @@
 #include <esp_wifi_types_generic.h>
 
 #include "dns_server.h"
+#include "sdkconfig.h"
 
+/**
+ * WifiConfigurationAp - WiFi configuration access point
+ * 
+ * Creates a WiFi hotspot with a captive portal for configuring WiFi credentials.
+ * Note: WiFi driver must be initialized before using this class.
+ */
 class WifiConfigurationAp {
 public:
-    static WifiConfigurationAp& GetInstance();
+    WifiConfigurationAp();
+    ~WifiConfigurationAp();
+
+    // Delete copy constructor and assignment operator
+    WifiConfigurationAp(const WifiConfigurationAp&) = delete;
+    WifiConfigurationAp& operator=(const WifiConfigurationAp&) = delete;
+
     void SetSsidPrefix(const std::string &&ssid_prefix);
+    void SetSsidPrefix(const std::string &ssid_prefix);
     void SetLanguage(const std::string &&language);
+    void SetLanguage(const std::string &language);
+    void SetShowOtaConfig(bool show) { show_ota_config_ = show; }
+    void SetShowSleepConfig(bool show) { show_sleep_config_ = show; }
     void Start();
     void Stop();
+#if !CONFIG_IDF_TARGET_ESP32P4
     void StartSmartConfig();
+#endif
     bool ConnectToWifi(const std::string &ssid, const std::string &password);
     void Save(const std::string &ssid, const std::string &password);
     std::vector<wifi_ap_record_t> GetAccessPoints();
     std::string GetSsid();
     std::string GetWebServerUrl();
 
-    // Delete copy constructor and assignment operator
-    WifiConfigurationAp(const WifiConfigurationAp&) = delete;
-    WifiConfigurationAp& operator=(const WifiConfigurationAp&) = delete;
+    /**
+     * Set callback for when exit is requested from config mode
+     * This is called when user requests to exit config mode (e.g., via /exit endpoint)
+     */
+    void OnExitRequested(std::function<void()> callback);
 
 private:
-    // Private constructor
-    WifiConfigurationAp();
-    ~WifiConfigurationAp();
-
     std::mutex mutex_;
-    DnsServer dns_server_;
+    std::unique_ptr<DnsServer> dns_server_;
     httpd_handle_t server_ = NULL;
     EventGroupHandle_t event_group_;
     std::string ssid_prefix_;
@@ -48,15 +67,22 @@ private:
     bool is_connecting_ = false;
     esp_netif_t* ap_netif_ = nullptr;
     std::vector<wifi_ap_record_t> ap_records_;
+    uint8_t last_connected_channel_ = 0;
 
-    // Advanced configuration items
-    std::string music_url_;
+    // 高级配置项
     std::string ota_url_;
+    // [DB-Robot] cau hinh rieng
+    std::string music_url_;
     std::string weather_api_key_;
     std::string weather_city_;
     int8_t max_tx_power_;
     bool remember_bssid_;
     bool sleep_mode_;
+    bool show_ota_config_ = false;
+    bool show_sleep_config_ = false;
+
+    // Callbacks
+    std::function<void()> on_exit_requested_;
 
     void StartAccessPoint();
     void StartWebServer();
@@ -64,9 +90,11 @@ private:
     // Event handlers
     static void WifiEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
     static void IpEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
+#if !CONFIG_IDF_TARGET_ESP32P4
     static void SmartConfigEventHandler(void* arg, esp_event_base_t event_base, 
                                       int32_t event_id, void* event_data);
     esp_event_handler_instance_t sc_event_instance_ = nullptr;
+#endif
 };
 
 #endif // _WIFI_CONFIGURATION_AP_H_

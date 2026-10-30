@@ -1,11 +1,15 @@
 dependencies:
   idf: '>=5.3'
-description: ESP32 WiFi Configuration
+  espressif/cjson:
+    version: "^1.7.19"
+    matches:
+      - if: "idf_version >=6.0"
+description: DB-Robot WiFi configuration portal (based on 78/esp-wifi-connect 3.3.1)
 files:
   exclude:
   - .git
   - dist
 license: MIT
-repository: https://github.com/TienHuyIoT/esp-wifi-connect
-url: https://github.com/TienHuyIoT/esp-wifi-connect
-version: 1.0.0
+repository: https://github.com/ledienbien-ai/dbrobot_esp-wifi-connect
+url: https://github.com/ledienbien-ai/dbrobot_esp-wifi-connect
+version: 3.3.1

@@ -1,4 +1,32 @@
-# ESP32 Wi-Fi Connect
+<p align="center"><img src="assets/dbrobot_logo.png" width="160"/></p>
+
+# DB-Robot ESP32 Wi-Fi Connect
+
+Thư viện cấu hình Wi-Fi riêng cho dự án **[DB-ROBOT](https://dbrobot.vn)**, dựa trên
+[78/esp-wifi-connect](https://github.com/78/esp-wifi-connect) **v3.3.1** (ESP-IDF 5.3 → 6.x).
+
+Khi chưa có Wi-Fi, robot phát điểm truy cập `DB-Robot-xxxx`; mở `http://192.168.4.1` để cấu hình.
+
+## Khác biệt so với bản gốc
+- Giao diện cấu hình mang thương hiệu DB-Robot, mặc định **tiếng Việt** (`vi-VN`).
+- Tab nâng cao thêm: **máy chủ (OTA URL)**, **máy chủ nhạc** (`music_url`), **API key thời tiết** (`weather_api_key`), **địa danh** (`weather_city`) — lưu trong NVS namespace `wifi`.
+- Giữ endpoint `POST /reboot` (lưu xong khởi động lại để cài đặt mới có hiệu lực); `POST /exit` của bản gốc vẫn dùng được.
+- `assets/sonic_wifi_config.html`: công cụ cấu hình Wi-Fi bằng âm thanh.
+
+## Dùng trong firmware
+```yaml
+# main/idf_component.yml
+dependencies:
+  dbrobot_esp-wifi-connect:
+    git: https://github.com/ledienbien-ai/dbrobot_esp-wifi-connect.git
+    version: v3.3.1-db1
+```
+
+---
+
+## README bản gốc (78/esp-wifi-connect)
+
+### ESP32 Wi-Fi Connect
 
 This component helps with Wi-Fi connection for the device.
 
@@ -6,13 +34,40 @@ It first tries to connect to a Wi-Fi network using the credentials stored in the
 
 The URL to access the web server is `http://192.168.4.1`.
 
-### Screenshot: Wi-Fi Configuration
+### Screenshot: Wi-Fi Configuration v3.2
 
-<img src="assets/ap_v3.png" width="320" alt="Wi-Fi Configuration">
+<img src="assets/ap_v3_2.jpg" width="320" alt="Wi-Fi Configuration v3.2">
 
-### Screenshot: Advanced Options
+## Changelog: v3.3.1
 
-<img src="assets/ap_v3_advanced.png" width="320" alt="Advanced Configuration">
+- Bound SSID/password copies into `wifi_config` so a full 32-byte SSID no longer overflows with `strcpy`.
+- Config portal and SmartConfig now handle a maximum-length SSID without truncating or reading past the buffer.
+
+## Changelog: v3.3.0
+
+- Persist each saved AP's channel in NVS as `channel`, `channel1`, ... `channel9` (same indexing as `password` / `passwordN`). 2.4 GHz (1-14) and 5 GHz (36-177) share one `uint8` key because the channel numbers do not overlap.
+- The first station scan after start only visits those saved channels. If no matching AP is found, the next scan is a full-band scan.
+- After a successful connection, the current channel is written back so later boots stay accurate if the AP moved.
+
+## Changelog: v3.2.0
+
+- Station mode now connects to the strongest same-SSID AP. `StartConnect()` sets `WIFI_ALL_CHANNEL_SCAN` + `WIFI_CONNECT_AP_BY_SIGNAL` on the station config so the driver picks the AP with the best signal instead of the first match it finds (the previous default was `WIFI_FAST_SCAN`).
+- Added `station_failure_retry_cnt` (default: 3) to `WifiManagerConfig`. The driver retries the strongest AP this many times before falling back to a weaker same-SSID AP, avoiding spurious fallback on a single transient auth failure.
+- Added `show_ota_config` and `show_sleep_config` flags to `WifiManagerConfig`. Both default to `false`, hiding the corresponding fields in the config portal Advanced tab. Set them to `true` to make the fields visible.
+
+## Changelog: v3.1.0
+
+- Event callback now includes an additional `data` parameter for extra information.
+- Disconnected event now provides the disconnect reason code via the `data` parameter.
+- This allows applications to handle different disconnect scenarios appropriately.
+
+## Changelog: v3.0.0
+
+- Added WifiManager class for unified WiFi connection management.
+- Improved DnsServer and WifiConfigurationAp classes for better resource handling.
+- Updated HTML for configuration success message to use exit endpoint instead of reboot.
+- Enhanced error handling and state management in WifiStation.
+- Cleaned up unused code and improved thread safety across components.
 
 ## Changelog: v2.6.0
 
@@ -47,11 +102,14 @@ The URL to access the web server is `http://192.168.4.1`.
 
 The Wi-Fi credentials are stored in the flash under the "wifi" namespace.
 
-The keys are "ssid", "ssid1", "ssid2" ... "ssid9", "password", "password1", "password2" ... "password9".
+The keys are "ssid", "ssid1", ... "ssid9", "password", "password1", ... "password9", and "channel", "channel1", ... "channel9". Channel is a `uint8` (0 = unknown; 1-14 = 2.4 GHz; 36-177 = 5 GHz).
 
 ## Usage
 
 ```cpp
+#include <wifi_manager.h>
+#include <ssid_manager.h>
+
 // Initialize the default event loop
 ESP_ERROR_CHECK(esp_event_loop_create_default());
 
@@ -63,17 +121,58 @@ if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
 }
 ESP_ERROR_CHECK(ret);
 
-// Get the Wi-Fi configuration
+// Get the WifiManager singleton
+auto& wifi_manager = WifiManager::GetInstance();
+
+// Initialize with configuration
+WifiManagerConfig config;
+config.ssid_prefix = "ESP32";  // AP mode SSID prefix
+config.language = "zh-CN";     // Web UI language
+
+// Optional: tune connection-to-strongest-AP behavior
+// config.station_failure_retry_cnt = 3;  // retries before falling back to weaker AP
+
+// Optional: show advanced fields in the config portal
+// config.show_ota_config = true;    // show Custom OTA URL input
+// config.show_sleep_config = true;  // show Sleep Mode toggle
+
+wifi_manager.Initialize(config);
+
+// Set event callback to handle WiFi events
+// The callback receives the event type and optional data (e.g., disconnect reason)
+wifi_manager.SetEventCallback([](WifiEvent event, const std::string& data) {
+    switch (event) {
+        case WifiEvent::Scanning:
+            ESP_LOGI("WiFi", "Scanning for networks...");
+            break;
+        case WifiEvent::Connecting:
+            ESP_LOGI("WiFi", "Connecting to network...");
+            break;
+        case WifiEvent::Connected:
+            ESP_LOGI("WiFi", "Connected successfully!");
+            break;
+        case WifiEvent::Disconnected:
+            // data contains the disconnect reason code
+            ESP_LOGW("WiFi", "Disconnected from network, reason: %s", data.c_str());
+            break;
+        case WifiEvent::ConfigModeEnter:
+            ESP_LOGI("WiFi", "Entered config mode");
+            break;
+        case WifiEvent::ConfigModeExit:
+            ESP_LOGI("WiFi", "Exited config mode");
+            break;
+    }
+});
+
+// Check if there are saved Wi-Fi credentials
 auto& ssid_list = SsidManager::GetInstance().GetSsidList();
 if (ssid_list.empty()) {
-    // Start the Wi-Fi configuration AP
-    auto& ap = WifiConfigurationAp::GetInstance();
-    ap.SetSsidPrefix("ESP32");
-    ap.Start();
-    return;
+    // No credentials saved, start config AP mode
+    wifi_manager.StartConfigAp();
+} else {
+    // Try to connect to the saved Wi-Fi network
+    wifi_manager.StartStation();
 }
-
-// Otherwise, connect to the Wi-Fi network
-WifiStation::GetInstance().Start();
 ```
 
+Please check https://github.com/78/xiaozhi-esp32 for more usage.
